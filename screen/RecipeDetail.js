@@ -5,11 +5,22 @@ import Fonts from '../constants/Fonts'
 import IngredientsList from '../components/RecipeDetails/IngredientsList';
 import * as WebBrowser from 'expo-web-browser';
 const Loading = () => {
-    return <View />
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#222' }}>
+        <ActivityIndicator size='large' color='#e67e22' style={{
+            transform: [
+                { scale: 1.3 }
+            ]
+        }} />
+    </View>
 }
 
-const Error = () => {
-    return <View />
+const Error = (props) => {
+    return <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <Text style={{ fontFamily: Fonts.getFont(Fonts.poppinsSemiBold), color: 'white', fontSize: 22 }}>{props.error || 'There was an unidentified problem. Please Try Again'}</Text>
+        <TouchableOpacity style={{ marginTop: 10, backgroundColor: '#e67e22', width: '50%', paddingVertical: 10, paddingHorizontal: 15, borderRadius: 5 }}>
+            <Text style={{ fontFamily: Fonts.getFont(Fonts.poppinsBold), fontSize: 16, color: 'white' }}>Try Again</Text>
+        </TouchableOpacity>
+    </View>
 }
 const RecipeDetail = ({ navigation, route }) => {
     const [loading, setLoading] = useState(true);
@@ -30,14 +41,8 @@ const RecipeDetail = ({ navigation, route }) => {
     useEffect(() => {
         getRecipe()
     }, [])
-    if (error) return navigation.navigate('Recipes');
-    if (loading) return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#222' }}>
-        <ActivityIndicator size='large' color='#e67e22' style={{
-            transform: [
-                { scale: 1.3 }
-            ]
-        }} />
-    </View>
+    if (error) return <Error message={error} />
+    if (loading) return <Loading />
     const handleOpenWebBrowser = () => {
         WebBrowser.openBrowserAsync(recipe.source_url)
     }
